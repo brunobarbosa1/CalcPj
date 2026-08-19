@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CalculadoraPJ" parent="Theme.CalculadoraPJ.Base">
+        <item name="android:windowSplashScreenBackground">@color/pj_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_vazio</item>
+    </style>
+</resources>

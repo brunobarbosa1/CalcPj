@@ -18,6 +18,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +44,7 @@ import com.pjcalc.ui.history.DetalheScreen
 import com.pjcalc.ui.history.HistoricoScreen
 import com.pjcalc.ui.home.HomeScreen
 import com.pjcalc.ui.settings.AjustesScreen
+import com.pjcalc.ui.splash.SplashScreen
 import com.pjcalc.ui.home.HomeViewModel
 import com.pjcalc.ui.home.ResultadoScreen
 import com.pjcalc.ui.theme.JetBrainsMono
@@ -64,6 +68,12 @@ private const val ROTA_HISTORICO_DETALHE = "historico/detalhe"
 
 @Composable
 fun PjApp(navController: NavHostController = rememberNavController()) {
+    var mostrandoSplash by rememberSaveable { mutableStateOf(true) }
+    if (mostrandoSplash) {
+        SplashScreen(aoTerminar = { mostrandoSplash = false })
+        return
+    }
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val destinoAtual = backStackEntry?.destination
 
