@@ -51,16 +51,36 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `comeca com as horas padrao preenchidas e sem poder calcular`() {
-        val vm = viewModel()
+    fun `sem padrao definido os dois campos comecam vazios`() = runTest {
+        val vm = HomeViewModel(
+            CalcularGanhoUseCase(),
+            repositorio,
+            PreferenciasRepositoryFake(Preferencias())
+        )
 
-        assertEquals("160", vm.state.value.horas)
+        assertEquals("", vm.state.value.horas)
+        assertEquals("", vm.state.value.valorHora)
         assertFalse(vm.state.value.podeCalcular)
+    }
+
+    @Test
+    fun `o valor hora padrao tambem preenche o campo`() = runTest {
+        val vm = HomeViewModel(
+            CalcularGanhoUseCase(),
+            repositorio,
+            PreferenciasRepositoryFake(
+                Preferencias(horasPadrao = 176.0, valorHoraPadrao = 95.5)
+            )
+        )
+
+        assertEquals("176", vm.state.value.horas)
+        assertEquals("95,5", vm.state.value.valorHora)
     }
 
     @Test
     fun `preencher valor hora valido habilita o calculo`() {
         val vm = viewModel()
+        vm.aoMudarHoras("160")
 
         vm.aoMudarValorHora("120,00")
 
@@ -178,6 +198,7 @@ class HomeViewModelTest {
     @Test
     fun `salvar sem ter calculado nao grava nada`() = runTest {
         val vm = viewModel()
+        vm.aoMudarHoras("160")
         vm.aoMudarValorHora("120")
 
         vm.salvarMes()
@@ -188,6 +209,7 @@ class HomeViewModelTest {
     @Test
     fun `o estado sinaliza que o mes foi salvo`() = runTest {
         val vm = viewModel()
+        vm.aoMudarHoras("160")
         vm.aoMudarValorHora("120")
         vm.calcular()
         assertFalse(vm.state.value.salvo)
@@ -200,6 +222,7 @@ class HomeViewModelTest {
     @Test
     fun `recalcular depois de salvar volta a permitir salvar`() = runTest {
         val vm = viewModel()
+        vm.aoMudarHoras("160")
         vm.aoMudarValorHora("120")
         vm.calcular()
         vm.salvarMes()
@@ -213,6 +236,7 @@ class HomeViewModelTest {
     @Test
     fun `trocar de regime limpa o resultado anterior`() = runTest {
         val vm = viewModel()
+        vm.aoMudarHoras("160")
         vm.aoMudarValorHora("120")
         vm.calcular()
 
@@ -225,6 +249,7 @@ class HomeViewModelTest {
     fun `no regime MEI o calculo desconta so o DAS`() = runTest {
         val vm = viewModel()
         vm.aoTrocarRegime(TipoRegime.MEI)
+        vm.aoMudarHoras("160")
         vm.aoMudarValorHora("120")
 
         vm.calcular()
@@ -238,6 +263,7 @@ class HomeViewModelTest {
     fun `salvar no MEI grava o regime MEI no registro`() = runTest {
         val vm = viewModel()
         vm.aoTrocarRegime(TipoRegime.MEI)
+        vm.aoMudarHoras("160")
         vm.aoMudarValorHora("120")
         vm.calcular()
 

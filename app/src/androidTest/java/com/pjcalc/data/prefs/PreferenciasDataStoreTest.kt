@@ -40,11 +40,12 @@ class PreferenciasDataStoreTest {
     }
 
     @Test
-    fun sem_nada_gravado_valem_os_padroes_da_spec() = runTest {
+    fun sem_nada_gravado_horas_e_valor_hora_comecam_zerados() = runTest {
         val prefs = repositorio.preferencias.first()
 
         assertEquals(TipoRegime.ALIQUOTAS, prefs.tipoRegime)
-        assertEquals(160.0, prefs.horasPadrao, 0.001)
+        assertEquals(0.0, prefs.horasPadrao, 0.001)
+        assertEquals(0.0, prefs.valorHoraPadrao, 0.001)
         assertEquals(RegimeTributario.Aliquotas(11.0, 5.0, 1.5), prefs.aliquotas)
     }
 

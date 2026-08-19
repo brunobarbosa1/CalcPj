@@ -52,19 +52,19 @@ class AjustesViewModel @Inject constructor(
         _state.update { atual ->
             atual.copy(
                 tipoRegime = prefs.tipoRegime,
-                horasPadrao = atual.horasPadrao.ifEmpty { formatarHoras(prefs.horasPadrao) },
+                horasPadrao = atual.horasPadrao.ifEmpty { textoOuVazio(prefs.horasPadrao) },
                 valorHoraPadrao = atual.valorHoraPadrao.ifEmpty {
-                    if (prefs.valorHoraPadrao > 0) formatarHoras(prefs.valorHoraPadrao) else ""
+                    textoOuVazio(prefs.valorHoraPadrao)
                 },
                 inss = atual.inss.ifEmpty { formatarHoras(prefs.aliquotas.inss) },
                 iss = atual.iss.ifEmpty { formatarHoras(prefs.aliquotas.iss) },
                 irrf = atual.irrf.ifEmpty { formatarHoras(prefs.aliquotas.irrf) },
-                das = atual.das.ifEmpty {
-                    if (prefs.mei.das > 0) formatarHoras(prefs.mei.das) else ""
-                }
+                das = atual.das.ifEmpty { textoOuVazio(prefs.mei.das) }
             )
         }
     }
+
+    private fun textoOuVazio(valor: Double) = if (valor > 0) formatarHoras(valor) else ""
 
     fun aoTrocarRegime(tipo: TipoRegime) {
         viewModelScope.launch { preferencias.definirTipoRegime(tipo) }

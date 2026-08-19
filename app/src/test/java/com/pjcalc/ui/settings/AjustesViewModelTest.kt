@@ -38,6 +38,14 @@ class AjustesViewModelTest {
     }
 
     @Test
+    fun `padrao zerado deixa o campo vazio em vez de mostrar zero`() = runTest {
+        val vazio = AjustesViewModel(PreferenciasRepositoryFake(Preferencias()))
+
+        assertEquals("", vazio.state.value.horasPadrao)
+        assertEquals("", vazio.state.value.valorHoraPadrao)
+    }
+
+    @Test
     fun `trocar o regime persiste a escolha`() = runTest {
         viewModel().aoTrocarRegime(TipoRegime.MEI)
 

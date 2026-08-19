@@ -16,6 +16,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pjcalc.domain.formatarHoras
 import com.pjcalc.domain.model.TipoRegime
 import com.pjcalc.domain.nomeDoMes
 import com.pjcalc.ui.components.MonoLabel
@@ -93,8 +94,12 @@ fun HomeScreen(
 
         Spacer(Modifier.height(20.dp))
         PjRodapePadrao(
-            texto = "${state.regime.rotulo} · Padrão: ${state.horasPadrao.toInt()}h",
-            acao = "Editar",
+            texto = if (state.horasPadrao > 0) {
+                "${state.regime.rotulo} · Padrão: ${formatarHoras(state.horasPadrao)}h"
+            } else {
+                "${state.regime.rotulo} · Sem padrão"
+            },
+            acao = if (state.horasPadrao > 0) "Editar" else "Definir",
             aoClicarAcao = aoAbrirAjustes
         )
 

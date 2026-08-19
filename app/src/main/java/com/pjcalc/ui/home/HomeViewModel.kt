@@ -58,10 +58,9 @@ class HomeViewModel @Inject constructor(
                         tipoRegime = prefs.tipoRegime,
                         horasPadrao = prefs.horasPadrao,
                         horas = if (atual.camposEditados) atual.horas
-                        else formatarHoras(prefs.horasPadrao),
+                        else textoOuVazio(prefs.horasPadrao),
                         valorHora = if (atual.camposEditados) atual.valorHora
-                        else if (prefs.valorHoraPadrao > 0) formatarHoras(prefs.valorHoraPadrao)
-                        else "",
+                        else textoOuVazio(prefs.valorHoraPadrao),
                         resultado = null,
                         salvo = false
                     )
@@ -93,6 +92,8 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    private fun textoOuVazio(valor: Double) = if (valor > 0) formatarHoras(valor) else ""
 
     fun aoTrocarRegime(tipo: TipoRegime) {
         viewModelScope.launch { preferencias.definirTipoRegime(tipo) }

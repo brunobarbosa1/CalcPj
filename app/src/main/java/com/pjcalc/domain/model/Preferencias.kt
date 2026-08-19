@@ -10,7 +10,7 @@ data class Preferencias(
         irrf = 1.5
     ),
     val mei: RegimeTributario.Mei = RegimeTributario.Mei(das = 0.0),
-    val horasPadrao: Double = 160.0,
+    val horasPadrao: Double = 0.0,
     val valorHoraPadrao: Double = 0.0
 ) {
     val regime: RegimeTributario
