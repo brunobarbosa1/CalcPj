@@ -18,7 +18,9 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun providePjDatabase(@ApplicationContext context: Context): PjDatabase =
-        Room.databaseBuilder(context, PjDatabase::class.java, "pjcalc.db").build()
+        Room.databaseBuilder(context, PjDatabase::class.java, "pjcalc.db")
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
 
     @Provides
     fun provideRegistroMesDao(db: PjDatabase): RegistroMesDao = db.registroMesDao()

@@ -151,7 +151,8 @@ private fun ItemDoMes(
                 Spacer(Modifier.height(6.dp))
                 MonoLabel(
                     texto = "${formatarHoras(item.registro.horas)}h · " +
-                        "${formatarMoedaCompacta(item.registro.valorHora)}/h",
+                        "${formatarMoedaCompacta(item.registro.valorHora)}/h · " +
+                        item.registro.regime.rotulo,
                     cor = PjTextTertiary,
                     maiusculas = false
                 )

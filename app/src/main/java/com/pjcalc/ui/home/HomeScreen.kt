@@ -16,9 +16,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pjcalc.domain.model.TipoRegime
 import com.pjcalc.domain.nomeDoMes
 import com.pjcalc.ui.components.MonoLabel
 import com.pjcalc.ui.components.PjNumberField
+import com.pjcalc.ui.components.PjSeletor
 import com.pjcalc.ui.components.PjPrimaryButton
 import com.pjcalc.ui.components.PjRodapePadrao
 import com.pjcalc.ui.components.PjTitulo
@@ -50,7 +52,18 @@ fun HomeScreen(
         Spacer(Modifier.height(14.dp))
         PjTitulo(texto = "Quanto vou\nganhar", destaque = "?")
 
-        Spacer(Modifier.height(36.dp))
+        Spacer(Modifier.height(28.dp))
+        PjSeletor(
+            opcoes = listOf("Alíquotas", "MEI"),
+            selecionada = if (state.tipoRegime == TipoRegime.MEI) 1 else 0,
+            aoSelecionar = { indice ->
+                viewModel.aoTrocarRegime(
+                    if (indice == 1) TipoRegime.MEI else TipoRegime.ALIQUOTAS
+                )
+            }
+        )
+
+        Spacer(Modifier.height(28.dp))
         PjNumberField(
             rotulo = "Horas no mês",
             valor = state.horas,
@@ -82,7 +95,7 @@ fun HomeScreen(
 
         Spacer(Modifier.height(20.dp))
         PjRodapePadrao(
-            texto = "Padrão: ${state.horasPadrao.toInt()}h",
+            texto = "${state.regime.rotulo} · Padrão: ${state.horasPadrao.toInt()}h",
             acao = "Editar",
             aoClicarAcao = aoAbrirAjustes
         )

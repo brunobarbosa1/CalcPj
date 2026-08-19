@@ -3,8 +3,12 @@ package com.pjcalc.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pjcalc.data.repository.RegistroMesRepository
+import com.pjcalc.data.prefs.PreferenciasRepository
+import com.pjcalc.domain.formatarHoras
+import com.pjcalc.domain.model.RegimeTributario
 import com.pjcalc.domain.model.RegistroMes
 import com.pjcalc.domain.model.ResultadoCalculo
+import com.pjcalc.domain.model.TipoRegime
 import com.pjcalc.domain.parseDecimal
 import com.pjcalc.domain.usecase.CalcularGanhoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +21,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 data class HomeUiState(
-    val horas: String = "160",
+    val horas: String = "",
     val valorHora: String = "",
     val erroHoras: String? = null,
     val erroValorHora: String? = null,
@@ -28,9 +32,10 @@ data class HomeUiState(
     val ano: Int = LocalDate.now().year,
     val mes: Int = LocalDate.now().monthValue,
     val horasPadrao: Double = 160.0,
-    val aliqINSS: Double = 11.0,
-    val aliqISS: Double = 5.0,
-    val aliqIRRF: Double = 1.5
+    val regime: RegimeTributario = RegimeTributario.Aliquotas(inss = 11.0, iss = 5.0, irrf = 1.5),
+    val tipoRegime: TipoRegime = TipoRegime.ALIQUOTAS,
+    /** Depois que o usuário mexe nos campos, mudar o padrão não sobrescreve o que ele digitou. */
+    val camposEditados: Boolean = false
 ) {
     val podeCalcular: Boolean
         get() = parseDecimal(horas) != null && parseDecimal(valorHora) != null
@@ -39,22 +44,61 @@ data class HomeUiState(
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val calcularGanho: CalcularGanhoUseCase,
-    private val repositorio: RegistroMesRepository
+    private val repositorio: RegistroMesRepository,
+    private val preferencias: PreferenciasRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            preferencias.preferencias.collect { prefs ->
+                _state.update { atual ->
+                    atual.copy(
+                        regime = prefs.regime,
+                        tipoRegime = prefs.tipoRegime,
+                        horasPadrao = prefs.horasPadrao,
+                        horas = if (atual.camposEditados) atual.horas
+                        else formatarHoras(prefs.horasPadrao),
+                        valorHora = if (atual.camposEditados) atual.valorHora
+                        else if (prefs.valorHoraPadrao > 0) formatarHoras(prefs.valorHoraPadrao)
+                        else "",
+                        resultado = null,
+                        salvo = false
+                    )
+                }
+            }
+        }
+    }
+
     fun aoMudarHoras(texto: String) {
         _state.update {
-            it.copy(horas = texto, erroHoras = erroDe(texto), resultado = null, salvo = false)
+            it.copy(
+                horas = texto,
+                erroHoras = erroDe(texto),
+                resultado = null,
+                salvo = false,
+                camposEditados = true
+            )
         }
     }
 
     fun aoMudarValorHora(texto: String) {
         _state.update {
-            it.copy(valorHora = texto, erroValorHora = erroDe(texto), resultado = null, salvo = false)
+            it.copy(
+                valorHora = texto,
+                erroValorHora = erroDe(texto),
+                resultado = null,
+                salvo = false,
+                camposEditados = true
+            )
         }
+    }
+
+    /** Grava nas preferências: a troca vale para a Home e para os Ajustes. */
+    fun aoTrocarRegime(tipo: TipoRegime) {
+        viewModelScope.launch { preferencias.definirTipoRegime(tipo) }
     }
 
     fun calcular() {
@@ -65,9 +109,7 @@ class HomeViewModel @Inject constructor(
         calcularGanho(
             horas = horas,
             valorHora = valorHora,
-            aliqINSS = atual.aliqINSS,
-            aliqISS = atual.aliqISS,
-            aliqIRRF = atual.aliqIRRF
+            regime = atual.regime
         ).onSuccess { resultado ->
             _state.update {
                 it.copy(
@@ -91,9 +133,7 @@ class HomeViewModel @Inject constructor(
                     mes = atual.mes,
                     horas = atual.horasCalculadas,
                     valorHora = atual.valorHoraCalculado,
-                    aliqINSS = atual.aliqINSS,
-                    aliqISS = atual.aliqISS,
-                    aliqIRRF = atual.aliqIRRF,
+                    regime = atual.regime,
                     criadoEm = System.currentTimeMillis()
                 )
             )

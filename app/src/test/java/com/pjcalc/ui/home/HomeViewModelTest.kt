@@ -1,6 +1,10 @@
 package com.pjcalc.ui.home
 
+import com.pjcalc.data.prefs.PreferenciasRepositoryFake
 import com.pjcalc.data.repository.RegistroMesRepositoryFake
+import com.pjcalc.domain.model.Preferencias
+import com.pjcalc.domain.model.TipoRegime
+import com.pjcalc.domain.model.RegimeTributario
 import com.pjcalc.domain.usecase.CalcularGanhoUseCase
 import com.pjcalc.util.DispatcherPrincipalRule
 import kotlinx.coroutines.flow.first
@@ -19,8 +23,33 @@ class HomeViewModelTest {
     val dispatcherRule = DispatcherPrincipalRule()
 
     private val repositorio = RegistroMesRepositoryFake()
+    private val preferencias = PreferenciasRepositoryFake(
+        Preferencias(mei = RegimeTributario.Mei(das = 80.90))
+    )
 
-    private fun viewModel() = HomeViewModel(CalcularGanhoUseCase(), repositorio)
+    private fun viewModel() = HomeViewModel(CalcularGanhoUseCase(), repositorio, preferencias)
+
+    @Test
+    fun `as horas padrao das preferencias preenchem o campo`() = runTest {
+        val vm = HomeViewModel(
+            CalcularGanhoUseCase(),
+            repositorio,
+            PreferenciasRepositoryFake(Preferencias(horasPadrao = 176.0))
+        )
+
+        assertEquals("176", vm.state.value.horas)
+    }
+
+    @Test
+    fun `editar as horas ganha das preferencias`() = runTest {
+        val prefs = PreferenciasRepositoryFake(Preferencias(horasPadrao = 160.0))
+        val vm = HomeViewModel(CalcularGanhoUseCase(), repositorio, prefs)
+
+        vm.aoMudarHoras("100")
+        prefs.definirHorasPadrao(176.0)
+
+        assertEquals("100", vm.state.value.horas)
+    }
 
     @Test
     fun `comeca com as horas padrao preenchidas e sem poder calcular`() {
@@ -139,9 +168,10 @@ class HomeViewModelTest {
         val salvo = repositorio.observarTodos().first().single()
         assertEquals(168.0, salvo.horas, 0.001)
         assertEquals(120.0, salvo.valorHora, 0.001)
-        assertEquals(11.0, salvo.aliqINSS, 0.001)
-        assertEquals(5.0, salvo.aliqISS, 0.001)
-        assertEquals(1.5, salvo.aliqIRRF, 0.001)
+        assertEquals(
+            RegimeTributario.Aliquotas(inss = 11.0, iss = 5.0, irrf = 1.5),
+            salvo.regime
+        )
         assertEquals(vm.state.value.ano, salvo.ano)
         assertEquals(vm.state.value.mes, salvo.mes)
     }
@@ -179,5 +209,41 @@ class HomeViewModelTest {
         vm.calcular()
 
         assertFalse(vm.state.value.salvo)
+    }
+
+    @Test
+    fun `trocar de regime limpa o resultado anterior`() = runTest {
+        val vm = viewModel()
+        vm.aoMudarValorHora("120")
+        vm.calcular()
+
+        vm.aoTrocarRegime(TipoRegime.MEI)
+
+        assertNull(vm.state.value.resultado)
+    }
+
+    @Test
+    fun `no regime MEI o calculo desconta so o DAS`() = runTest {
+        val vm = viewModel()
+        vm.aoTrocarRegime(TipoRegime.MEI)
+        vm.aoMudarValorHora("120")
+
+        vm.calcular()
+
+        val resultado = vm.state.value.resultado!!
+        assertEquals(listOf("DAS"), resultado.descontos.map { it.nome })
+        assertEquals(19119.10, resultado.liquido, 0.001)
+    }
+
+    @Test
+    fun `salvar no MEI grava o regime MEI no registro`() = runTest {
+        val vm = viewModel()
+        vm.aoTrocarRegime(TipoRegime.MEI)
+        vm.aoMudarValorHora("120")
+        vm.calcular()
+
+        vm.salvarMes()
+
+        assertEquals(RegimeTributario.Mei(80.90), repositorio.observarTodos().first().single().regime)
     }
 }

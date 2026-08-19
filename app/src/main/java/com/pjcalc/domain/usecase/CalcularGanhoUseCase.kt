@@ -1,5 +1,8 @@
 package com.pjcalc.domain.usecase
 
+import com.pjcalc.domain.formatarPercentual
+import com.pjcalc.domain.model.Desconto
+import com.pjcalc.domain.model.RegimeTributario
 import com.pjcalc.domain.model.ResultadoCalculo
 import javax.inject.Inject
 
@@ -8,30 +11,34 @@ class CalcularGanhoUseCase @Inject constructor() {
     operator fun invoke(
         horas: Double,
         valorHora: Double,
-        aliqINSS: Double,
-        aliqISS: Double,
-        aliqIRRF: Double
+        regime: RegimeTributario
     ): Result<ResultadoCalculo> {
-        val invalido = listOf(horas, valorHora, aliqINSS, aliqISS, aliqIRRF)
-            .any {
-                it < 0 || it.isNaN()
-            }
-        if (invalido) {
+        val valores = listOf(horas, valorHora) + when (regime) {
+            is RegimeTributario.Aliquotas -> listOf(regime.inss, regime.iss, regime.irrf)
+            is RegimeTributario.Mei -> listOf(regime.das)
+        }
+        if (valores.any { it < 0 || it.isNaN() }) {
             return Result.failure(IllegalArgumentException("Valores não podem ser negativos"))
         }
 
         val bruto = horas * valorHora
-        val inss = bruto * (aliqINSS / 100)
-        val iss = bruto * (aliqISS / 100)
-        val irrf = bruto * (aliqIRRF / 100)
+        val descontos = when (regime) {
+            is RegimeTributario.Aliquotas -> listOf(
+                Desconto("INSS", formatarPercentual(regime.inss), bruto * regime.inss / 100),
+                Desconto("ISS", formatarPercentual(regime.iss), bruto * regime.iss / 100),
+                Desconto("IRRF", formatarPercentual(regime.irrf), bruto * regime.irrf / 100)
+            )
+
+            is RegimeTributario.Mei -> listOf(
+                Desconto("DAS", "valor fixo", regime.das)
+            )
+        }
 
         return Result.success(
             ResultadoCalculo(
                 bruto = bruto,
-                inss = inss,
-                iss = iss,
-                irrf = irrf,
-                liquido = bruto - inss - iss - irrf
+                descontos = descontos,
+                liquido = bruto - descontos.sumOf { it.valor }
             )
         )
     }

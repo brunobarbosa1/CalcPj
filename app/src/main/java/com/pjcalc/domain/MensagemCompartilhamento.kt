@@ -7,18 +7,16 @@ fun mensagemCompartilhamento(
     mes: Int,
     horas: Double,
     valorHora: Double,
-    aliqINSS: Double,
-    aliqISS: Double,
-    aliqIRRF: Double,
     resultado: ResultadoCalculo
 ): String = buildString {
     appendLine("Calculadora PJ · ${nomeDoMes(mes)} $ano")
     appendLine("${formatarHoras(horas)}h × ${formatarMoeda(valorHora)}/h")
     appendLine()
     appendLine("Bruto: ${formatarMoeda(resultado.bruto)}")
-    appendLine("INSS ${formatarPercentual(aliqINSS)}: -${formatarMoeda(resultado.inss)}")
-    appendLine("ISS ${formatarPercentual(aliqISS)}: -${formatarMoeda(resultado.iss)}")
-    appendLine("IRRF ${formatarPercentual(aliqIRRF)}: -${formatarMoeda(resultado.irrf)}")
+    resultado.descontos.forEach { desconto ->
+        val rotulo = listOfNotNull(desconto.nome, desconto.detalhe).joinToString(" ")
+        appendLine("$rotulo: -${formatarMoeda(desconto.valor)}")
+    }
     appendLine()
     append("Líquido a receber: ${formatarMoeda(resultado.liquido)}")
 }

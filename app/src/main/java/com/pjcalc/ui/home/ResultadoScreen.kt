@@ -62,12 +62,7 @@ fun ResultadoScreen(
         )
 
         Spacer(Modifier.height(30.dp))
-        BreakdownDescontos(
-            resultado = resultado,
-            aliqINSS = state.aliqINSS,
-            aliqISS = state.aliqISS,
-            aliqIRRF = state.aliqIRRF
-        )
+        BreakdownDescontos(resultado = resultado)
 
         Spacer(Modifier.height(30.dp))
         Row {
@@ -85,9 +80,6 @@ fun ResultadoScreen(
                         mes = state.mes,
                         horas = state.horasCalculadas,
                         valorHora = state.valorHoraCalculado,
-                        aliqINSS = state.aliqINSS,
-                        aliqISS = state.aliqISS,
-                        aliqIRRF = state.aliqIRRF,
                         resultado = resultado
                     )
                     val envio = Intent(Intent.ACTION_SEND).apply {

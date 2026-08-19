@@ -1,6 +1,7 @@
 package com.pjcalc.ui.history
 
 import com.pjcalc.data.repository.RegistroMesRepositoryFake
+import com.pjcalc.domain.model.RegimeTributario
 import com.pjcalc.domain.model.RegistroMes
 import com.pjcalc.domain.usecase.CalcularGanhoUseCase
 import com.pjcalc.util.DispatcherPrincipalRule
@@ -64,6 +65,26 @@ class HistoricoViewModelTest {
     }
 
     @Test
+    fun `meses de regimes diferentes convivem com seus proprios descontos`() = runTest {
+        repositorio.salvar(registro(ano = 2026, mes = 7, horas = 160.0, valorHora = 120.0))
+        repositorio.salvar(
+            registro(
+                ano = 2026, mes = 8, horas = 160.0, valorHora = 120.0,
+                regime = RegimeTributario.Mei(80.90)
+            )
+        )
+
+        val estado = estadoCarregado(viewModel())
+        val agosto = estado.registros.first { it.registro.mes == 8 }
+        val julho = estado.registros.first { it.registro.mes == 7 }
+
+        assertEquals(listOf("DAS"), agosto.resultado.descontos.map { it.nome })
+        assertEquals(19119.10, agosto.resultado.liquido, 0.001)
+        assertEquals(listOf("INSS", "ISS", "IRRF"), julho.resultado.descontos.map { it.nome })
+        assertEquals(15840.00, julho.resultado.liquido, 0.001)
+    }
+
+    @Test
     fun `historico vazio nao quebra`() = runTest {
         val estado = estadoCarregado(viewModel())
 
@@ -75,15 +96,14 @@ class HistoricoViewModelTest {
         ano: Int,
         mes: Int,
         horas: Double = 160.0,
-        valorHora: Double = 100.0
+        valorHora: Double = 100.0,
+        regime: RegimeTributario = RegimeTributario.Aliquotas(inss = 11.0, iss = 5.0, irrf = 1.5)
     ) = RegistroMes(
         ano = ano,
         mes = mes,
         horas = horas,
         valorHora = valorHora,
-        aliqINSS = 11.0,
-        aliqISS = 5.0,
-        aliqIRRF = 1.5,
+        regime = regime,
         criadoEm = 0L
     )
 }

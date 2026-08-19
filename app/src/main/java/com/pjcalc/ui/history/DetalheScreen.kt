@@ -64,12 +64,7 @@ fun DetalheScreen(
         )
 
         Spacer(Modifier.height(30.dp))
-        BreakdownDescontos(
-            resultado = resultado,
-            aliqINSS = registro.aliqINSS,
-            aliqISS = registro.aliqISS,
-            aliqIRRF = registro.aliqIRRF
-        )
+        BreakdownDescontos(resultado = resultado)
 
         Spacer(Modifier.height(30.dp))
         PjPrimaryButton(
@@ -80,9 +75,6 @@ fun DetalheScreen(
                     mes = registro.mes,
                     horas = registro.horas,
                     valorHora = registro.valorHora,
-                    aliqINSS = registro.aliqINSS,
-                    aliqISS = registro.aliqISS,
-                    aliqIRRF = registro.aliqIRRF,
                     resultado = resultado
                 )
                 val envio = Intent(Intent.ACTION_SEND).apply {

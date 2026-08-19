@@ -6,8 +6,6 @@ data class RegistroMes(
     val mes: Int,
     val horas: Double,
     val valorHora: Double,
-    val aliqINSS: Double,
-    val aliqISS: Double,
-    val aliqIRRF: Double,
+    val regime: RegimeTributario,
     val criadoEm: Long
 )

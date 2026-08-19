@@ -86,9 +86,11 @@ class RegistroMesDaoTest {
         mes = mes,
         horas = horas,
         valorHora = valorHora,
+        regime = REGIME_ALIQUOTAS,
         aliqINSS = 11.0,
         aliqISS = 5.0,
         aliqIRRF = 1.5,
+        das = null,
         criadoEm = System.currentTimeMillis()
     )
 }

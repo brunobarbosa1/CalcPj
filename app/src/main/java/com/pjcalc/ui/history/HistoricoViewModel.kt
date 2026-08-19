@@ -36,9 +36,7 @@ class HistoricoViewModel @Inject constructor(
                     calcularGanho(
                         horas = registro.horas,
                         valorHora = registro.valorHora,
-                        aliqINSS = registro.aliqINSS,
-                        aliqISS = registro.aliqISS,
-                        aliqIRRF = registro.aliqIRRF
+                        regime = registro.regime
                     ).getOrNull()?.let { RegistroCalculado(registro, it) }
                 },
                 carregando = false

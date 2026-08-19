@@ -40,6 +40,7 @@ import com.pjcalc.ui.history.ARG_ID_REGISTRO
 import com.pjcalc.ui.history.DetalheScreen
 import com.pjcalc.ui.history.HistoricoScreen
 import com.pjcalc.ui.home.HomeScreen
+import com.pjcalc.ui.settings.AjustesScreen
 import com.pjcalc.ui.home.HomeViewModel
 import com.pjcalc.ui.home.ResultadoScreen
 import com.pjcalc.ui.theme.JetBrainsMono
@@ -116,7 +117,7 @@ fun PjApp(navController: NavHostController = rememberNavController()) {
                     DetalheScreen(aoVoltar = { navController.popBackStack() })
                 }
             }
-            composable(Aba.AJUSTES.rota) { EmBreve("Ajustes") }
+            composable(Aba.AJUSTES.rota) { AjustesScreen() }
         }
     }
 }

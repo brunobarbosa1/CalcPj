@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjcalc.domain.formatarMoeda
-import com.pjcalc.domain.formatarPercentual
 import com.pjcalc.domain.formatarValor
+import com.pjcalc.domain.model.Desconto
 import com.pjcalc.domain.model.ResultadoCalculo
 import com.pjcalc.ui.theme.PjAccent
 import com.pjcalc.ui.theme.PjBorder
@@ -49,9 +49,6 @@ fun ValorEmDestaque(liquido: Double, modifier: Modifier = Modifier) {
 @Composable
 fun BreakdownDescontos(
     resultado: ResultadoCalculo,
-    aliqINSS: Double,
-    aliqISS: Double,
-    aliqIRRF: Double,
     modifier: Modifier = Modifier
 ) {
     PjCard(modifier = modifier.fillMaxWidth()) {
@@ -82,17 +79,16 @@ fun BreakdownDescontos(
             )
             Spacer(Modifier.height(20.dp))
 
-            LinhaDesconto("INSS", aliqINSS, resultado.inss)
-            Spacer(Modifier.height(16.dp))
-            LinhaDesconto("ISS", aliqISS, resultado.iss)
-            Spacer(Modifier.height(16.dp))
-            LinhaDesconto("IRRF", aliqIRRF, resultado.irrf)
+            resultado.descontos.forEachIndexed { indice, desconto ->
+                if (indice > 0) Spacer(Modifier.height(16.dp))
+                LinhaDesconto(desconto)
+            }
         }
     }
 }
 
 @Composable
-private fun LinhaDesconto(nome: String, aliquota: Double, valor: Double) {
+private fun LinhaDesconto(desconto: Desconto) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -100,19 +96,21 @@ private fun LinhaDesconto(nome: String, aliquota: Double, valor: Double) {
     ) {
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
-                text = nome,
+                text = desconto.nome,
                 style = MaterialTheme.typography.bodyLarge,
                 color = PjTextSecondary
             )
-            Text(
-                text = formatarPercentual(aliquota),
-                style = MaterialTheme.typography.bodyMedium,
-                color = PjTextTertiary,
-                modifier = Modifier.padding(start = 6.dp)
-            )
+            if (desconto.detalhe != null) {
+                Text(
+                    text = desconto.detalhe,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = PjTextTertiary,
+                    modifier = Modifier.padding(start = 6.dp)
+                )
+            }
         }
         Text(
-            text = "−  ${formatarMoeda(valor)}",
+            text = "−  ${formatarMoeda(desconto.valor)}",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.W600,
             color = PjError
