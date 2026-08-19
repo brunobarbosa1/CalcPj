@@ -1,0 +1,93 @@
+package com.pjcalc.ui.home
+
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pjcalc.domain.nomeDoMes
+import com.pjcalc.ui.components.MonoLabel
+import com.pjcalc.ui.components.PjNumberField
+import com.pjcalc.ui.components.PjPrimaryButton
+import com.pjcalc.ui.components.PjRodapePadrao
+import com.pjcalc.ui.components.PjTitulo
+import com.pjcalc.ui.theme.PjTextTertiary
+
+@Composable
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    aoCalcular: () -> Unit,
+    aoAbrirAjustes: () -> Unit
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val focusManager = LocalFocusManager.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                // Toques em campos são consumidos pela própria caixa do campo,
+                // então aqui só chegam os toques fora deles.
+                detectTapGestures(onTap = { focusManager.clearFocus() })
+            }
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp)
+    ) {
+        Spacer(Modifier.height(24.dp))
+        MonoLabel("${nomeDoMes(state.mes)} · ${state.ano}", cor = PjTextTertiary)
+
+        Spacer(Modifier.height(14.dp))
+        PjTitulo(texto = "Quanto vou\nganhar", destaque = "?")
+
+        Spacer(Modifier.height(36.dp))
+        PjNumberField(
+            rotulo = "Horas no mês",
+            valor = state.horas,
+            aoMudar = viewModel::aoMudarHoras,
+            sufixo = "h",
+            erro = state.erroHoras
+        )
+
+        Spacer(Modifier.height(24.dp))
+        PjNumberField(
+            rotulo = "Valor / hora",
+            valor = state.valorHora,
+            aoMudar = viewModel::aoMudarValorHora,
+            prefixo = "R$",
+            placeholder = "0,00",
+            erro = state.erroValorHora
+        )
+
+        Spacer(Modifier.height(36.dp))
+        PjPrimaryButton(
+            texto = "Calcular ganho  →",
+            onClick = {
+                viewModel.calcular()
+                aoCalcular()
+            },
+            habilitado = state.podeCalcular,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(20.dp))
+        PjRodapePadrao(
+            texto = "Padrão: ${state.horasPadrao.toInt()}h",
+            acao = "Editar",
+            aoClicarAcao = aoAbrirAjustes
+        )
+
+        Spacer(Modifier.height(24.dp))
+    }
+}
+
