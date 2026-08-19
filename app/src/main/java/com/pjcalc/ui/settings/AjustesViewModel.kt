@@ -39,7 +39,6 @@ private const val INVALIDO = "Valor inválido"
 class AjustesViewModel @Inject constructor(
     private val preferencias: PreferenciasRepository
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(AjustesUiState())
     val state: StateFlow<AjustesUiState> = _state.asStateFlow()
 
@@ -106,7 +105,6 @@ class AjustesViewModel @Inject constructor(
         viewModelScope.launch { preferencias.definirMei(RegimeTributario.Mei(das)) }
     }
 
-    /** Grava as três juntas: campo em edição inválido mantém o valor já guardado. */
     private fun gravarAliquotas() {
         val atual = _state.value
         viewModelScope.launch {

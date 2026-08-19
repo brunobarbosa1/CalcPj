@@ -13,7 +13,6 @@ import javax.inject.Inject
 class RegistroMesRepositoryRoom @Inject constructor(
     private val dao: RegistroMesDao
 ) : RegistroMesRepository {
-
     override fun observarTodos(): Flow<List<RegistroMes>> =
         dao.observarTodos().map { lista -> lista.map { it.paraDominio() } }
 

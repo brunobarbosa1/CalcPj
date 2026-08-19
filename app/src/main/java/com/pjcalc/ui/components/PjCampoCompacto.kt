@@ -41,7 +41,6 @@ import com.pjcalc.ui.theme.PjSurface
 import com.pjcalc.ui.theme.PjTextPrimary
 import com.pjcalc.ui.theme.PjTextTertiary
 
-/** Linha de ajuste: rótulo mono à esquerda, valor editável à direita. */
 @Composable
 fun PjCampoCompacto(
     rotulo: String,
@@ -132,7 +131,6 @@ fun PjCampoCompacto(
     }
 }
 
-/** Seletor de regime: duas pílulas, a ativa em accent. */
 @Composable
 fun PjSeletor(
     opcoes: List<String>,

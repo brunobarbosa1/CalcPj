@@ -2,10 +2,6 @@ package com.pjcalc.domain.model
 
 enum class TipoRegime { ALIQUOTAS, MEI }
 
-/**
- * As configurações dos dois regimes ficam guardadas ao mesmo tempo: trocar de
- * regime não apaga o que estava configurado no outro.
- */
 data class Preferencias(
     val tipoRegime: TipoRegime = TipoRegime.ALIQUOTAS,
     val aliquotas: RegimeTributario.Aliquotas = RegimeTributario.Aliquotas(

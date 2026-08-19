@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FormatosTest {
-
     @Test
     fun `aliquota inteira nao mostra casa decimal`() {
         assertEquals("11%", formatarPercentual(11.0))

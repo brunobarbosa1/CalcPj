@@ -8,7 +8,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-/** Troca o dispatcher principal para que viewModelScope funcione em teste de JVM. */
 @OptIn(ExperimentalCoroutinesApi::class)
 class DispatcherPrincipalRule : TestWatcher() {
     override fun starting(description: Description) = Dispatchers.setMain(UnconfinedTestDispatcher())

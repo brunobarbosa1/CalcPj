@@ -62,7 +62,6 @@ private const val ROTA_RESULTADO = "resultado"
 private const val ROTA_HISTORICO_LISTA = "historico/lista"
 private const val ROTA_HISTORICO_DETALHE = "historico/detalhe"
 
-
 @Composable
 fun PjApp(navController: NavHostController = rememberNavController()) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -122,7 +121,6 @@ fun PjApp(navController: NavHostController = rememberNavController()) {
     }
 }
 
-/** Home e Resultado dividem o mesmo ViewModel, escopado ao grafo da calculadora. */
 @Composable
 private fun viewModelDaCalculadora(
     navController: NavHostController,

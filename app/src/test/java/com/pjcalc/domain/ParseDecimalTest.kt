@@ -5,7 +5,6 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class ParseDecimalTest {
-
     @Test
     fun `inteiro simples é aceito`() {
         assertEquals(120.0, parseDecimal("120")!!, DELTA)

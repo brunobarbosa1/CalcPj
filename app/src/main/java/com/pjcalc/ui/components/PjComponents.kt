@@ -132,10 +132,6 @@ fun PjSecondaryButton(
     }
 }
 
-/**
- * Campo numérico grande do mockup: rótulo mono em cima, caixa escura com o valor
- * em destaque e um prefixo (R$) ou sufixo (h) discreto.
- */
 @Composable
 fun PjNumberField(
     rotulo: String,
@@ -240,7 +236,6 @@ fun PjNumberField(
     }
 }
 
-/** Renderiza os centavos menores que a parte inteira, como no mockup. */
 fun comCentavosMenores(texto: String, estilo: TextStyle): AnnotatedString {
     val (inteiro, centavos) = dividirCentavos(texto)
     return buildAnnotatedString {
@@ -251,7 +246,6 @@ fun comCentavosMenores(texto: String, estilo: TextStyle): AnnotatedString {
     }
 }
 
-/** Título grande com a última pontuação em accent, como no mockup. */
 @Composable
 fun PjTitulo(texto: String, destaque: String, modifier: Modifier = Modifier) {
     Text(

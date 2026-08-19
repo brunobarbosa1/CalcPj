@@ -18,7 +18,6 @@ data class HistoricoUiState(
     val registros: List<RegistroCalculado> = emptyList(),
     val carregando: Boolean = true
 ) {
-    /** Do mais antigo para o mais novo, que é como o gráfico é lido. */
     val ultimosSeis: List<RegistroCalculado>
         get() = registros.take(MESES_NO_GRAFICO).reversed()
 }
@@ -28,7 +27,6 @@ class HistoricoViewModel @Inject constructor(
     repositorio: RegistroMesRepository,
     calcularGanho: CalcularGanhoUseCase
 ) : ViewModel() {
-
     val state: StateFlow<HistoricoUiState> = repositorio.observarTodos()
         .map { registros ->
             HistoricoUiState(

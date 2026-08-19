@@ -4,14 +4,9 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-/** Discriminadores gravados no banco. Independentes do rótulo exibido na tela. */
 const val REGIME_ALIQUOTAS = "ALIQUOTAS"
 const val REGIME_MEI = "MEI"
 
-/**
- * O regime é achatado em colunas anuláveis: só as do regime gravado vêm
- * preenchidas. Um regime novo no futuro é mais uma coluna, sem serialização.
- */
 @Entity(
     tableName = "registro_mes",
     indices = [Index(value = ["ano", "mes"], unique = true)]

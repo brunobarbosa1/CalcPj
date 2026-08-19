@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MensagemCompartilhamentoTest {
-
     private val calcular = CalcularGanhoUseCase()
 
     private fun mensagem(regime: RegimeTributario, horas: Double = 168.0): String {

@@ -21,7 +21,6 @@ class DetalheViewModel @Inject constructor(
     repositorio: RegistroMesRepository,
     calcularGanho: CalcularGanhoUseCase
 ) : ViewModel() {
-
     private val id: Long = checkNotNull(savedStateHandle[ARG_ID_REGISTRO])
 
     val state: StateFlow<RegistroCalculado?> = repositorio.observarTodos()

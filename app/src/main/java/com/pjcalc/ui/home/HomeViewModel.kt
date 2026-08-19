@@ -34,7 +34,6 @@ data class HomeUiState(
     val horasPadrao: Double = 160.0,
     val regime: RegimeTributario = RegimeTributario.Aliquotas(inss = 11.0, iss = 5.0, irrf = 1.5),
     val tipoRegime: TipoRegime = TipoRegime.ALIQUOTAS,
-    /** Depois que o usuário mexe nos campos, mudar o padrão não sobrescreve o que ele digitou. */
     val camposEditados: Boolean = false
 ) {
     val podeCalcular: Boolean
@@ -47,7 +46,6 @@ class HomeViewModel @Inject constructor(
     private val repositorio: RegistroMesRepository,
     private val preferencias: PreferenciasRepository
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
@@ -96,7 +94,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /** Grava nas preferências: a troca vale para a Home e para os Ajustes. */
     fun aoTrocarRegime(tipo: TipoRegime) {
         viewModelScope.launch { preferencias.definirTipoRegime(tipo) }
     }

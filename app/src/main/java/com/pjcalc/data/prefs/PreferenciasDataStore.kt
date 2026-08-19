@@ -23,7 +23,6 @@ private val VALOR_HORA_PADRAO = doublePreferencesKey("valor_hora_padrao")
 class PreferenciasDataStore @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : PreferenciasRepository {
-
     override val preferencias: Flow<Preferencias> = dataStore.data.map { guardado ->
         val padrao = Preferencias()
         Preferencias(

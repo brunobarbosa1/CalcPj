@@ -6,10 +6,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CalcularGanhoUseCaseTest {
-
     private val calcular = CalcularGanhoUseCase()
-
-    // ---------- Regime por alíquotas ----------
 
     @Test
     fun `mes tipico por aliquotas produz bruto descontos e liquido`() {
@@ -68,8 +65,6 @@ class CalcularGanhoUseCaseTest {
 
         assertTrue(calcular(horas = 160.0, valorHora = 120.0, regime = regime).isFailure)
     }
-
-    // ---------- Regime MEI ----------
 
     @Test
     fun `mei desconta apenas o DAS`() {
@@ -133,8 +128,6 @@ class CalcularGanhoUseCaseTest {
                 .isFailure
         )
     }
-
-    // ---------- Validações comuns aos regimes ----------
 
     @Test
     fun `horas negativas sao rejeitadas em qualquer regime`() {

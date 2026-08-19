@@ -19,7 +19,6 @@ import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class PreferenciasDataStoreTest {
-
     @get:Rule
     val pasta = TemporaryFolder()
 

@@ -39,8 +39,6 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
-                // Toques em campos são consumidos pela própria caixa do campo,
-                // então aqui só chegam os toques fora deles.
                 detectTapGestures(onTap = { focusManager.clearFocus() })
             }
             .verticalScroll(rememberScrollState())
@@ -103,4 +101,3 @@ fun HomeScreen(
         Spacer(Modifier.height(24.dp))
     }
 }
-

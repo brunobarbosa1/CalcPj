@@ -27,7 +27,6 @@ import com.pjcalc.ui.theme.PjTextPrimary
 import com.pjcalc.ui.theme.PjTextSecondary
 import com.pjcalc.ui.theme.PjTextTertiary
 
-/** Líquido em destaque: R$ pequeno, inteiro grande e centavos reduzidos. */
 @Composable
 fun ValorEmDestaque(liquido: Double, modifier: Modifier = Modifier) {
     val estilo = MaterialTheme.typography.displayLarge

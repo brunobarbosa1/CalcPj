@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 class PreferenciasRepositoryFake(inicial: Preferencias = Preferencias()) : PreferenciasRepository {
-
     private val estado = MutableStateFlow(inicial)
 
     override val preferencias: Flow<Preferencias> = estado

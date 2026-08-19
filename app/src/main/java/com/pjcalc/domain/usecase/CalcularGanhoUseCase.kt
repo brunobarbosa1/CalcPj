@@ -7,7 +7,6 @@ import com.pjcalc.domain.model.ResultadoCalculo
 import javax.inject.Inject
 
 class CalcularGanhoUseCase @Inject constructor() {
-
     operator fun invoke(
         horas: Double,
         valorHora: Double,

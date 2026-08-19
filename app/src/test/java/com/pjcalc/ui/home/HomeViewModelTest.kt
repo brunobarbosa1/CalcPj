@@ -18,7 +18,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class HomeViewModelTest {
-
     @get:Rule
     val dispatcherRule = DispatcherPrincipalRule()
 

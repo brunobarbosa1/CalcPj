@@ -15,13 +15,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
- * O regime é achatado em colunas ao gravar e remontado ao ler. Este teste é o
- * que pega erro nesse mapeamento, indo até o SQLite de verdade.
- */
 @RunWith(AndroidJUnit4::class)
 class RegistroMesRepositoryRoomTest {
-
     private lateinit var db: PjDatabase
     private lateinit var repositorio: RegistroMesRepository
 

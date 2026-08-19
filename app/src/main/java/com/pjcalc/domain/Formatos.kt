@@ -21,10 +21,6 @@ fun nomeDoMes(mes: Int): String =
 
 fun abreviacaoMes(mes: Int): String = nomeDoMes(mes).take(3).uppercase()
 
-/**
- * Separa a parte inteira dos centavos para poder renderizá-los menores.
- * O separador decimal é a última pontuação: em "15.840,00" o ponto é milhar.
- */
 fun dividirCentavos(texto: String): Pair<String, String> {
     val separador = texto.indexOfLast { it == ',' || it == '.' }
     if (separador < 0) return texto to ""

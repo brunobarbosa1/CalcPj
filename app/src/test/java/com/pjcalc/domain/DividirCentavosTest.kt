@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class DividirCentavosTest {
-
     @Test
     fun `separa os centavos de um valor com milhar`() {
         assertEquals("15.840" to ",00", dividirCentavos("15.840,00"))

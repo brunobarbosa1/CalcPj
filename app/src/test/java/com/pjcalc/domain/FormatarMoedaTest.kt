@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FormatarMoedaTest {
-
     @Test
     fun `formata milhar com ponto e centavos com virgula`() {
         assertEquals("R\$ 18.216,00", normalizar(formatarMoeda(18216.0)))
@@ -31,6 +30,5 @@ class FormatarMoedaTest {
         assertEquals("R\$ 15.840", normalizar(formatarMoedaCompacta(15840.49)))
     }
 
-    /** O JDK usa espaço não-quebrável entre o símbolo e o número. */
     private fun normalizar(valor: String) = valor.replace('\u00A0', ' ')
 }

@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RegistroMesDao {
-
     @Query("SELECT * FROM registro_mes ORDER BY ano DESC, mes DESC, criadoEm DESC")
     fun observarTodos(): Flow<List<RegistroMesEntity>>
 
